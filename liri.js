@@ -13,25 +13,27 @@ var spotify = new Spotify(keys.spotify);
 
 
 if (process.argv[2] == "spotify-this-song") {
-    spotify
-        .search({ type: 'track', query: media })
-        .then(function (response) {
-            var songData = response.tracks.items
-            for (var i in songData) {
-                console.log("----------------------")
-                console.log("   ")
-                console.log(i)
-                console.log("The artist is: " + songData[i].artists[0].name);
-                console.log("The song name is: " + songData[i].name);
-                console.log("The album is called: " + songData[i].album.name)
-                console.log("Here is a preview...: " + songData[i].preview_url)
-                console.log("   ")
-                console.log("----------------------")
-            }
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
+    fs.appendFile("log.txt", process.argv[2] + ", " + process.argv[3], function (error) {
+        spotify
+            .search({ type: 'track', query: media })
+            .then(function (response) {
+                var songData = response.tracks.items
+                for (var i in songData) {
+                    console.log("----------------------")
+                    console.log("   ")
+                    console.log(i)
+                    console.log("The artist is: " + songData[i].artists[0].name);
+                    console.log("The song name is: " + songData[i].name);
+                    console.log("The album is called: " + songData[i].album.name)
+                    console.log("Here is a preview...: " + songData[i].preview_url)
+                    console.log("   ")
+                    console.log("----------------------")
+                }
+            })
+            .catch(function (err) {
+                console.log(err);
+            });
+    })
 }
 
 // =============================================================================================================================
@@ -50,21 +52,23 @@ function ombdFunct() {
         movieName += process.argv[i];
     }
     if (process.argv[2] == "movie-this") {
-        request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
-            if (!error && response.statusCode === 200) {
-                console.log("----------------------------")
-                console.log("   ")
-                console.log("Title: " + JSON.parse(body).Title);
-                console.log("IMBD Rating: " + JSON.parse(body).imdbRating);
-                console.log("Released: " + JSON.parse(body).Released)
-                console.log("Country: " + JSON.parse(body).Country)
-                console.log("Language: " + JSON.parse(body).Language)
-                console.log("Plot: " + JSON.parse(body).Plot)
-                console.log("Actors: " + JSON.parse(body).Actors)
-                console.log(JSON.parse(body).Ratings[1].Source + ": " + JSON.parse(body).Ratings[1].Value)
-                console.log("   ")
-                console.log("----------------------------")
-            }
+        fs.appendFile("log.txt", "random.txt", process.argv[2] + ", " + process.argv[3] + ", ", function (error) {
+            request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy", function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                    console.log("----------------------------")
+                    console.log("   ")
+                    console.log("Title: " + JSON.parse(body).Title);
+                    console.log("IMBD Rating: " + JSON.parse(body).imdbRating);
+                    console.log("Released: " + JSON.parse(body).Released)
+                    console.log("Country: " + JSON.parse(body).Country)
+                    console.log("Language: " + JSON.parse(body).Language)
+                    console.log("Plot: " + JSON.parse(body).Plot)
+                    console.log("Actors: " + JSON.parse(body).Actors)
+                    console.log(JSON.parse(body).Ratings[1].Source + ": " + JSON.parse(body).Ratings[1].Value)
+                    console.log("   ")
+                    console.log("----------------------------")
+                }
+            })
         })
     }
 }
@@ -85,23 +89,24 @@ function bandsFunct() {
         artist += process.argv[i];
     }
     if (process.argv[2] == "concert-this") {
-        request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-            var body = JSON.parse(body)
-            console.log("    ")
-            console.log("-------------------------------------")
-            console.log("    ")
-            console.log("Upcoming concerts for " + artist + ": ");
-            console.log("   ")
-            for (var set in body) {
-                var date = moment(body[set].datetime).format("MM/DD/YYYY")
-                console.log(body[set].venue.city + ", " + "at " + body[set].venue.name + ", " + "on " + date)
-            }
-            console.log("    ")
-            console.log("-------------------------------------")
-            console.log("    ")
+        fs.appendFile("log.txt", process.argv[2] + ", " + process.argv[3] + ", ", function (error) {
+            request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
+                var body = JSON.parse(body)
+                console.log("    ")
+                console.log("-------------------------------------")
+                console.log("    ")
+                console.log("Upcoming concerts for " + artist + ": ");
+                console.log("   ")
+                for (var set in body) {
+                    var date = moment(body[set].datetime).format("MM/DD/YYYY")
+                    console.log(body[set].venue.city + ", " + "at " + body[set].venue.name + ", " + "on " + date)
+                }
+                console.log("    ")
+                console.log("-------------------------------------")
+                console.log("    ")
+            })
         })
     }
-
 }
 bandsFunct();
 
